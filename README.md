@@ -1,0 +1,2 @@
+# metaalphabet
+Hardhat based scripts
