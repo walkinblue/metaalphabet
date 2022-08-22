@@ -276,7 +276,7 @@
 
             window.addEventListener('load', loadData);
             let uploadhref = window.location.host.replace("8000", "8001");
-            document.getElementById("form").action = `http://${uploadhref}/upload`;
+            document.getElementById("form").action = `https://${uploadhref}/upload`;
         </script>
         <script  type="text/javascript">
             
@@ -284,7 +284,7 @@
     </head>
     <body>
         <div><text class="title">NFT PFP Generator</text></div>
-        <form id="form" method="post" enctype="multipart/form-data" action="http://localhost:8001/upload">
+        <form id="form" method="post" enctype="multipart/form-data" action="https://localhost:8001/upload">
             <div>
                 <text>Amount:</text>
                 <input id="amount" name="amount" type="number" value="100">

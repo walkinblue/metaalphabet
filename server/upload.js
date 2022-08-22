@@ -2,11 +2,12 @@ const express = require('express')
 const multer  = require('multer')
 const port = 8001;
 const fs = require('fs');
+https = require('https');
 
-// const options = {
-//     key: fs.readFileSync('./keys/key.pem'),
-//     cert: fs.readFileSync('./keys/cert.pem')
-// };
+const options = {
+    key: fs.readFileSync('./keys/key.pem'),
+    cert: fs.readFileSync('./keys/cert.pem')
+};
 
 const app = express()
 
@@ -22,7 +23,11 @@ const upload = multer({ storage: storage })
 
 app.use(express.static(__dirname + '/public'));
 app.use('/upload', express.static('upload'));
-  
+
+if(fs.existsSync('./web/outputs/running')){
+  fs.unlinkSync("./web/outputs/running");
+}
+
 function saveFile(groupNo, files, body, olddata, traits){
   let data = {};
   data.files=[];
@@ -166,9 +171,11 @@ app.post(
     // return res.send("success")
 })
 
-app.listen(port,() => {
-  console.log(`Server running on port ${port}!`);
-  if(fs.existsSync('./web/outputs/running')){
-    fs.unlinkSync("./web/outputs/running");
-  }
-})
+
+const server = https.createServer(options, app).listen(port, function(){
+  console.log("Express server listening on port " + port);
+});
+
+// app.listen(port,() => {
+//   console.log(`Server running on port ${port}!`);
+// })
