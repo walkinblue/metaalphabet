@@ -1,3 +1,9 @@
 keys/cert.pem
 keys/key.pem
 web/nft.zip
+node_modules
+uploads/data.json
+uploads/traits.json
+web/outputs
+package-lock.json
+package.json

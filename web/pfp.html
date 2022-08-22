@@ -275,7 +275,8 @@
             }
 
             window.addEventListener('load', loadData);
-            document.getElementById("form").action = `http://${window.location.host}:8001/upload`;
+            let uploadhref = window.location.host.replace("8000", "8001");
+            document.getElementById("form").action = `http://${uploadhref}/upload`;
         </script>
         <script  type="text/javascript">
             

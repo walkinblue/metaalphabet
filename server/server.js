@@ -10,6 +10,7 @@ const options = {
 //如果data.json & traits.json不存在创建一个新的。
 const dataJson = "./uploads/data.json";
 const traitsJson = "./uploads/traits.json";
+
 if(fs.existsSync(dataJson) == false){
   fs.writeFileSync(dataJson, JSON.stringify({}));
 }
