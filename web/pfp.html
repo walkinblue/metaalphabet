@@ -274,7 +274,8 @@
 
             }
 
-            window.addEventListener('load', loadData)
+            window.addEventListener('load', loadData);
+            document.getElementById("form").action = `http://${window.location.host}:8001/upload`;
         </script>
         <script  type="text/javascript">
             
@@ -282,7 +283,7 @@
     </head>
     <body>
         <div><text class="title">NFT PFP Generator</text></div>
-        <form method="post" enctype="multipart/form-data" action="http://localhost:8001/upload">
+        <form id="form" method="post" enctype="multipart/form-data" action="http://localhost:8001/upload">
             <div>
                 <text>Amount:</text>
                 <input id="amount" name="amount" type="number" value="100">
