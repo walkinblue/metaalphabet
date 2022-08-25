@@ -35,6 +35,10 @@ function init(){
         fs.mkdirSync(marksDir);
         fs.renameSync("./web/images/NONE.png", "./marks/NONE.png");
     }
+    let uploadsDir = "./uploads";
+    if(fs.existsSync(uploadsDir) == false){
+        fs.mkdirSync(uploadsDir);
+    }
 }
 
 function authentication(req, res, next) {
