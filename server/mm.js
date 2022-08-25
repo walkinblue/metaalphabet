@@ -18,17 +18,18 @@ const options = {
 
 
 function init(){
-    let linesData = fs.readFileSync('./data/lines.json');
-    let marksData = fs.readFileSync('./data/marks.json');
-    let lines = JSON.parse(linesData);
-    let marks = JSON.parse(marksData);
-
-    for(let index in lines){
-        let line = lines[index];
-        let decode = line.decode;
-        // decode
+    let dataDir = "./data";
+    if(fs.existsSync(dataDir) == false){
+        fs.mkdirSync(dataDir);
     }
-    
+    let linesJson = './data/lines.json';
+    if(fs.existsSync(linesJson) == false){
+        fs.writeFileSync(linesJson, JSON.stringify([]));
+    }
+    let marksJson = './data/marks.json';
+    if(fs.existsSync(marksJson) == false){
+        fs.writeFileSync(marksJson, JSON.stringify([]));
+    }
 }
 
 function authentication(req, res, next) {
