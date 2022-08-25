@@ -1,0 +1,176 @@
+.title{
+    width: 100%;
+    font-size: 22px;
+    font-weight: bold;
+    height: 48px;
+}
+.item{
+    display: flex;
+    flex-direction: column;
+}
+.linetitle{
+    font-size: 14px;
+    font-weight: bold;
+    height: 28px;
+}
+.line{
+    font-size: 14px;
+    font-weight: normal;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.inputline{
+    width: 400px;
+    height: 20px;
+}
+.inputarea{
+    width: 400px;
+    height: 48px;
+}
+.lineImage{
+    font-size: 14px;
+    font-weight: normal;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.metaphors{
+    display: flex;
+    flex-direction: row;
+}
+.metaphor{
+    display: flex;
+    flex-direction: column;
+    margin: 2px;
+    border: 1px solid #eeeeee;
+}
+.metaphorname{
+    width: 64px;
+    font-size: 10px;
+    text-align: center;
+}
+.metaphorimage{
+    height: 64px;
+    width: 64px;
+}
+.mp_view{
+    position:absolute;
+    background-color: #eeeeee;
+    width: 100%;
+    height: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.mp_data{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+.mp_imagediv{
+    width: 144px;
+    height: 144px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.mp_image{
+    width: 128px;
+    height: 128px;
+}
+.mp_datadiv{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.mp_dataname{
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.mp_data_line{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    font-size: 14px;
+    height: 20px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+.mp_data_text{
+    margin-left: 2px;
+    margin-right: 2px;
+    text-align: left;
+    font-weight: normal;
+    font-size: 14px;
+}
+.mp_data_text_item{
+    margin-left: 2px;
+    margin-right: 15px;
+    text-align: left;
+    font-weight: normal;
+    font-size: 14px;
+}
+.mp_data_title{
+    text-align: left;
+    font-weight: bold;
+    font-size: 14px;
+    width: 80px;
+    /* background-color: #ff0000; */
+}
+.mp_input_num{
+    width: 48px;
+    margin-right: 15px;
+}
+.mp_input_button{
+    width: 48px;
+    margin-right: 10px;
+}
+.mp_input_radio{
+    /* margin-left: 15px; */
+}
+.mp_input_url{
+    margin-right: 5px;
+}
+.mp_input_checkbox{
+    /* margin-left: 15px; */
+}
+
+.mp_ext{
+    margin-top: 20px;
+    margin-left: 5px;
+    font-size: 14px;
+}
+.mp_input_search{
+    height: 22px;
+    margin-left: 5px;
+}
+.mp_ext_search{
+    height: 24px;
+    line-height: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.mp_data_seperator{
+    width: 100%; 
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: bolder;
+}
+.todo{
+    color: #ff0000;
+}
+.mp_input_new{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

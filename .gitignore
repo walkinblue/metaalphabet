@@ -7,3 +7,10 @@ uploads/traits.json
 web/outputs
 package-lock.json
 package.json
+metaalphabet.iml
+java/target/classes
+java/src
+data
+.idea
+marks
+uploads
