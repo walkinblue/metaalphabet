@@ -39,6 +39,10 @@ function init(){
     if(fs.existsSync(uploadsDir) == false){
         fs.mkdirSync(uploadsDir);
     }
+    let logsDir = "./logs";
+    if(fs.existsSync(logsDir) == false){
+        fs.mkdirSync(logsDir);
+    }
 }
 
 function authentication(req, res, next) {
@@ -120,7 +124,7 @@ app.post(
             return res.status(204).send();
         }
         
-        const childPorcess = await exec(`java -jar ./java/target/jar/metaalphabet.jar ${arg0} "${arg1}" "${arg2}" "${arg3}"`, {encoding: "UTF-8"}, function(err, stdout, stderr) {
+        const childPorcess = await exec(`java -jar ./java/target/jar/metaalphabet.jar ${arg0} "${arg1}" "${arg2}" "${arg3}"`, function(err, stdout, stderr) {
             if (err) {
                 console.log(err)
             }
