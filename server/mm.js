@@ -28,7 +28,7 @@ function init(){
     }
     let marksJson = './data/marks.json';
     if(fs.existsSync(marksJson) == false){
-        fs.writeFileSync(marksJson, JSON.stringify([]));
+        fs.writeFileSync(marksJson, JSON.stringify({}));
     }
     let marksDir = "./marks";
     if(fs.existsSync(marksDir) == false){
