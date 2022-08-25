@@ -30,6 +30,11 @@ function init(){
     if(fs.existsSync(marksJson) == false){
         fs.writeFileSync(marksJson, JSON.stringify([]));
     }
+    let marksDir = "./marks";
+    if(fs.existsSync(marksDir) == false){
+        fs.mkdirSync(marksDir);
+        fs.renameSync("./web/images/NONE.png", "./marks/NONE.png");
+    }
 }
 
 function authentication(req, res, next) {
