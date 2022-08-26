@@ -29,10 +29,10 @@
                             <input id="mp_image_url" type="text" value="" class="mp_input_url" />    
                             <text class="mp_data_text" style="font-size: 12px;">ctrl-v</text>
                             <input hidden id="mp_data_name" name="mp_data_name" type="text"  />
-                            <input hidden id="mp_index" type="text"  />
-                            <input hidden id="mp_mindex" type="text"  />
+                            <input hidden id="mp_index" name="mp_index" type="text"  />
+                            <input hidden id="mp_mindex" name="mp_mindex" type="text"  />
                         </div>
-                        <div class="mp_data_line">
+                        <!-- <div class="mp_data_line">
                             <text class="mp_data_title">处理参数：</text>
                             <text class="mp_data_tex todo">放缩：</text><input type="number" value="1.0" step="0.01" class="mp_input_num">
                             <text class="mp_data_tex todo">旋转：</text><input type="number" value="0" class="mp_input_num">
@@ -41,25 +41,29 @@
                             <input type="checkbox" class="mp_input_checkbox" ><text class="mp_data_text_item todo">镜面</text>
                             <input type="checkbox" class="mp_input_checkbox"><text class="mp_data_text_item todo">灰度</text>
                             <text class="mp_data_text" style="font-size: 10px;margin-left: 10px;">默认尺寸1024x1024</text>
-                        </div>
-                        <div class="mp_data_line">
+                        </div> -->
+                        <!-- <div class="mp_data_line">
                             <text class="mp_data_title">支持类型：</text>
                             <input type="checkbox" class="mp_input_checkbox" ><text class="mp_data_text_item todo">对象(名词、代词等)</text>
                             <input type="checkbox" class="mp_input_checkbox"><text class="mp_data_text_item todo">动作(动词)</text>
                             <input type="checkbox" class="mp_input_checkbox"><text class="mp_data_text_item todo">修饰(形容词、副词等)</text>
                             <input type="checkbox" class="mp_input_checkbox"><text class="mp_data_text_item todo">连接词(介词等)</text>
                             <input type="checkbox" class="mp_input_checkbox"><text class="mp_data_text_item todo">标点符号</text>
-                        </div>
+                        </div> -->
                         <div class="mp_data_seperator">[语句配置]</div>
-                        <div class="mp_data_line">
+                        <div class="mp_data_line" style="height:100px">
+                            <text class="mp_data_title">显示效果：</text>
+                            <textarea name="mp_data_parameters" id="mp_data_parameters" class="" style="height: 100px; width:400px;"></textarea>
+                        </div>
+                        <!-- <div class="mp_data_line">
                             <text class="mp_data_title">显示效果：</text>
                             <text class="mp_data_text todo">放缩：</text><input type="number" value="1.0" step="0.01" class="mp_input_num">
                             <text class="mp_data_text todo">旋转：</text><input type="number" value="0" class="mp_input_num">
                             <text class="mp_data_text todo">移动：x轴</text><input type="number" value="0" class="mp_input_num">
                             <text class="mp_data_text todo">y轴</text><input type="number" value="0" class="mp_input_num">
                             <text class="mp_data_text todo" style="font-size: 10px;">默认尺寸1024x1024</text>
-                        </div>
-                        <div class="mp_data_line">
+                        </div> -->
+                        <!-- <div class="mp_data_line">
                             <text class="mp_data_title">动画效果：</text>
                             <input type="radio" class="mp_input_radio" checked name="movement"><text class="mp_data_text_item todo">不移动</text>
                             <input type="radio" class="mp_input_radio" name="movement"><text class="mp_data_text_item todo">左右</text>
@@ -72,16 +76,18 @@
                             <input type="radio" class="mp_input_radio" checked name="rotation"><text class="mp_data_text_item todo">不旋转</text>
                             <input type="radio" class="mp_input_radio" name="rotation" ><text class="mp_data_text_item todo">顺旋</text>
                             <input type="radio" class="mp_input_radio" name="rotation" ><text class="mp_data_text_item todo">逆旋</text>
-                        </div>
-                        <div class="mp_data_line">
+                        </div> -->
+                        <!-- <div class="mp_data_line">
                             <text class="mp_data_title">特殊效果：</text>
                             <input type="checkbox" class="mp_input_checkbox" name="movement"><text class="mp_data_text_item todo">复数</text>
                             <input type="checkbox" class="mp_input_checkbox" name="movement"><text class="mp_data_text_item todo">过去(待完成)</text>
                             <input type="checkbox" class="mp_input_checkbox" name="movement" ><text class="mp_data_text_item todo">未来(待完成)</text>
-                        </div>
+                        </div> -->
                         <div class="mp_data_seperator"></div>
                         <div class="mp_data_line">
-                            <input type="submit" value="保存" id="mp_submit" class="mp_input_button"> <input type="reset" value="重置" class="mp_input_button">
+                            <input type="submit" value="保存" id="mp_submit" class="mp_input_button"> 
+                            <input type="button" value="播放" class="mp_input_button">
+                            <input type="reset" value="重置" class="mp_input_button">
                         </div>
                     </div>
                 </div>

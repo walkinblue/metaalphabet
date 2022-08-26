@@ -8,6 +8,8 @@ const exec = require('child_process').exec;
 const port = 8000;
 const log = require('../modules/log.js');
 const pass = require('../modules/pass.js');
+const { get } = require('http');
+const { randomInt } = require('crypto');
 
 
 const options = {
@@ -18,30 +20,26 @@ const options = {
 
 
 function init(){
-    let dataDir = "./data";
-    if(fs.existsSync(dataDir) == false){
-        fs.mkdirSync(dataDir);
-    }
-    let linesJson = './data/lines.json';
-    if(fs.existsSync(linesJson) == false){
-        fs.writeFileSync(linesJson, JSON.stringify([]));
-    }
-    let marksJson = './data/marks.json';
-    if(fs.existsSync(marksJson) == false){
-        fs.writeFileSync(marksJson, JSON.stringify({}));
-    }
-    let marksDir = "./marks";
-    if(fs.existsSync(marksDir) == false){
-        fs.mkdirSync(marksDir);
+    initDir("./data");
+    initFile('./data/lines.json', []);
+    initFile('./data/marks.json', {});
+    initDir("./marks", function(){
         fs.renameSync("./web/images/NONE.png", "./marks/NONE.png");
+    });
+    initDir("./uploads");
+    initDir("./logs");
+    initDir("./tmp");
+}
+
+function initDir(dir, callback){
+    if(fs.existsSync(dir) == false){
+        fs.mkdirSync(dir);
+        if(callback)callback();
     }
-    let uploadsDir = "./uploads";
-    if(fs.existsSync(uploadsDir) == false){
-        fs.mkdirSync(uploadsDir);
-    }
-    let logsDir = "./logs";
-    if(fs.existsSync(logsDir) == false){
-        fs.mkdirSync(logsDir);
+}
+function initFile(file, o){
+    if(fs.existsSync(file) == false){
+        fs.writeFileSync(file, JSON.stringify(o));
     }
 }
 
@@ -62,6 +60,7 @@ function authentication(req, res, next) {
     
     if (pass.check(user, pwd)) {
         log.info(user, " passed.");
+        req.user = user;
         next();
     } else {
         var err = new Error('You are not authenticated!');
@@ -108,23 +107,18 @@ app.post(
         let decodefresh = req.body.decodefresh;
         let lineremove = req.body.lineremove;
 
-        line.replace(`"`, "`")
-        decode.replace(`"`, "`")
-
-        let arg0 = null;
-        let arg1 = null;
-        let arg2 = null;
-        let arg3 = null;
-        if(linesubmit){arg0 = "linesubmit"; arg1 = index; arg2 = line; arg3 = decode};
-        if(decodefresh){arg0 = "decodefresh"; arg1 = index; arg2 = line;  arg3= ""};
-        if(lineremove){arg0 = "lineremove"; arg1 = index; arg2 = "";  arg3= ""};
+        if(linesubmit){arg0 = "linesubmit";};
+        if(decodefresh){arg0 = "decodefresh";};
+        if(lineremove){arg0 = "lineremove";};
         
         if(arg0 == null){
             console.log("error: ",req.body);
             return res.status(204).send();
         }
-        
-        const childPorcess = await exec(`java -jar ./java/target/jar/metaalphabet.jar ${arg0} "${arg1}" "${arg2}" "${arg3}"`, function(err, stdout, stderr) {
+        let argId = req.user+"-"+Date.now() + "-"+parseInt(Math.random() * 1000);
+        fs.writeFileSync(`./tmp/${argId}.json`, JSON.stringify({action: arg0, index: index, line: line, decode: decode}));
+
+        const childPorcess = await exec(`java -jar ./java/target/jar/metaalphabet.jar ${argId}`, function(err, stdout, stderr) {
             if (err) {
                 console.log(err)
             }
@@ -142,20 +136,36 @@ app.post(
   ]), 
   function (req, res, next) {
     
-    let file = req.files.mp_image_file[0];
+    if(req.files.mp_image_file){
+        let file = req.files.mp_image_file[0];
 
-    let filename = `mark_${Date.now()}.png`;
-    fs.rename(file.path, "./marks/"+filename, function(e){});
-    let markname = req.body.mp_data_name;
+        let filename = `mark_${Date.now()}.png`;
+        fs.rename(file.path, "./marks/"+filename, function(e){});    
+        let markname = req.body.mp_data_name;
 
-    let marksfile = './data/marks.json';
-    let marksData = fs.readFileSync(marksfile);
-    let marks = JSON.parse(marksData);
+        let marksfile = './data/marks.json';
+        let marksData = fs.readFileSync(marksfile);
+        let marks = JSON.parse(marksData);
+    
+        marks[markname] = {
+            image: filename,
+        };
+        fs.writeFileSync(marksfile, JSON.stringify(marks));
+    }
 
-    marks[markname] = {
-        image: filename,
-    };
-    fs.writeFileSync(marksfile, JSON.stringify(marks));
+
+
+    let index = req.body.mp_index;
+    let mindex = req.body.mp_mindex;
+    let parameters  = req.body.mp_data_parameters;
+
+    let linesfile = `./data/lines.json`;
+    let linesData = fs.readFileSync(linesfile);
+    let lines = JSON.parse(linesData);
+    lines[index].metaphors[mindex].parameters = parameters;
+
+    fs.writeFileSync(linesfile, JSON.stringify(lines));
+
 
     return res.status(204).send();
 })
@@ -164,6 +174,9 @@ const server = https.createServer(options, app).listen(port, function(){
   console.log("Express server listening on port " + port);
 
 });
+
+
+
 
 // app.listen(port,() => {
 //   console.log(`Server running on port ${port}!`);

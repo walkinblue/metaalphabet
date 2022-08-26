@@ -41,6 +41,9 @@ function init() {
             let container = new DataTransfer();
             container.items.add(file);
             document.getElementById(`mp_image_file`).files = container.files;
+
+
+
         }
     });
 
@@ -56,7 +59,15 @@ function init() {
     document.getElementById(`mp_submit`).addEventListener("click", function(){
         let index = document.getElementById(`mp_index`).value;
         let mindex = document.getElementById(`mp_mindex`).value;
-        document.getElementById(`mp_image_${index}_${mindex}`).src = document.getElementById(`mp_image`).src;
+        linesJson[index].metaphors[mindex].mark.image = document.getElementById(`mp_image`).src;
+        linesJson[index].metaphors[mindex].parameters = document.getElementById(`mp_data_parameters`).value;
+        drawCanvas(index);
+        // setTimeout(function(){
+        //     location.reload(true);
+        //     console.log(index, mindex);
+        //     showMetaphor(index, mindex);
+        // }, 100);
+        // document.getElementById(`mp_image_${index}_${mindex}`).src = document.getElementById(`mp_image`).src;
     });
 
     document.getElementById(`mp_input_new`).addEventListener("click", function(e){
@@ -64,6 +75,10 @@ function init() {
     });
 
 }
+
+
+
+
 
 function addLine(index, line, metaphors, items){
     // let line = linesJson[index];
@@ -80,11 +95,14 @@ function addLine(index, line, metaphors, items){
         if (marksJson[metaphor.mark.name])
             image = "/marks/" + marksJson[metaphor.mark.name].image;
         metaphor.mark.image = image;
-        imagesString += `<div id="metaphor_${index}_${mindex}" class="metaphor">
-                    <img id="mp_image_${index}_${mindex}" class="metaphorimage" src="${image}">
-                    <div class="metaphorname">${metaphor.mark.name}</div>
-                </div>`
+        // imagesString += `<div id="metaphor_${index}_${mindex}" class="metaphor">
+        //             <img id="mp_image_${index}_${mindex}" class="metaphorimage" src="${image}">
+        //             <div class="metaphorname">${metaphor.mark.name}</div>
+        //         </div>`
     }
+    let canvasWidth = metaphors.length * 68;
+    let canvasHeight = 64;
+    imagesString = `<canvas id="mp_canvas_${index}" width="${canvasWidth}" height="${canvasHeight}"/>`;
     imagesString = `<div class="metaphors" id="metaphors_${index}">` + imagesString + `</div>`;
 
     item.innerHTML =
@@ -97,9 +115,17 @@ function addLine(index, line, metaphors, items){
             </form>`;
     items.appendChild(item);
 
-    for (let mindex in metaphors) {
-        document.getElementById(`metaphor_${index}_${mindex}`).addEventListener("click", function (e) { showMetaphor(index, mindex) });
-    }
+    drawCanvas(index);
+    document.getElementById(`mp_canvas_${index}`).addEventListener("click", function(e){
+        console.log(e.offsetX, e.offsetY);
+        let mindex = parseInt(e.offsetX/68);
+        showMetaphor(index, mindex)
+    });
+
+
+    // for (let mindex in metaphors) {
+    //     document.getElementById(`metaphor_${index}_${mindex}`).addEventListener("click", function (e) { showMetaphor(index, mindex) });
+    // }
 
     document.getElementById(`mp_${index}_updateline`).addEventListener("click", function (e) {
         setTimeout(function(){
@@ -116,6 +142,26 @@ function addLine(index, line, metaphors, items){
             location.reload(true);
         },500)
     });
+}
+
+
+function drawCanvas(index){
+    if(linesJson[index] == null)return;
+    let metaphors = linesJson[index].metaphors;
+    let canvas = document.getElementById(`mp_canvas_${index}`);
+    let context=canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (let mindex in metaphors) {
+        let metaphor = metaphors[mindex];
+        let imageUrl = "/marks/NONE.png";
+        if (marksJson[metaphor.mark.name])
+            imageUrl = metaphor.mark.image;
+        let drawing = new Image();
+        drawing.src = imageUrl; // can also be a remote URL e.g. http://
+        drawing.onload = function() {
+            context.drawImage(drawing,mindex*68-2,0, 64, 64);
+        };
+    }
 }
 
 
@@ -150,12 +196,12 @@ function showMetaphor(index, mindex) {
 
     if(vdiv.style.display == "flex" && mpindexes.index == indexes.index && mpindexes.mindex == indexes.mindex){
         vdiv.style.display = "none";
-        idiv.style.border = "1px solid #eeeeee";
-        if(lastidiv != null)lastidiv.style.border = "1px solid #eeeeee";
+        // idiv.style.border = "1px solid #eeeeee";
+        // if(lastidiv != null)lastidiv.style.border = "1px solid #eeeeee";
         return;
     }
-    idiv.style.border = "1px solid #ff0000";
-    if(lastidiv != idiv && lastidiv != null)lastidiv.style.border = "1px solid #eeeeee";
+    // idiv.style.border = "1px solid #ff0000";
+    // if(lastidiv != idiv && lastidiv != null)lastidiv.style.border = "1px solid #eeeeee";
     lastidiv = idiv;
 
     let value = linesJson[index].metaphors[mindex].mark.name;
@@ -167,6 +213,9 @@ function showMetaphor(index, mindex) {
     document.getElementById(`mp_name`).innerHTML = linesJson[index].metaphors[mindex].mark.name;
     document.getElementById(`mp_image`).src =  linesJson[index].metaphors[mindex].mark.image;
     document.getElementById(`mp_data_name`).value = linesJson[index].metaphors[mindex].mark.name;
+    if(!linesJson[index].metaphors[mindex].parameters)linesJson[index].metaphors[mindex].parameters = "";
+    document.getElementById(`mp_data_parameters`).value = linesJson[index].metaphors[mindex].parameters;
+    
     document.getElementById(`mp_index`).value = index;
     document.getElementById(`mp_mindex`).value = mindex;
     
