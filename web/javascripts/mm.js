@@ -59,6 +59,7 @@ function init() {
 
         reader.readAsDataURL(document.getElementById(`mp_image_file`).files[0]);
     });
+
     document.getElementById(`mp_submit`).addEventListener("click", function(){
         let index = document.getElementById(`mp_index`).value;
         let mindex = document.getElementById(`mp_mindex`).value;
@@ -74,7 +75,7 @@ function init() {
     });
 
     document.getElementById(`mp_play`).addEventListener(`click`, function(e){
-        if(document.getElementById(`mp_play`).value != "停止"){
+        if(document.getElementById(`mp_play`).value == "停止"){
             document.getElementById(`mp_play`).value = "播放";
             stopping();
             return;
@@ -91,16 +92,16 @@ function init() {
             let metaphor = metaphors[index];
             let para = {};
             if(metaphor.parameters)para = JSON.parse(metaphor.parameters);
-            para.pos = parseInt(index);
-            para.image = metaphor.mark.image;
+            para._pos = parseInt(index);
+            para._image = metaphor.mark.image;
             parameters.push(para);
         }
 
         let changetring = document.getElementById(`mp_data_parameters`).value;
         if(changetring){
             let changeParam = JSON.parse(changetring);
-            changeParam.image = parameters[mindex].image;
-            changeParam.pos = parameters[mindex].pos;
+            changeParam._image = parameters[mindex]._image;
+            changeParam._pos = parameters[mindex]._pos;
             parameters[mindex] = changeParam;
         }
         // console.log(metaphor.parameters);
@@ -197,7 +198,7 @@ function drawCanvas(index){
         let drawing = new Image();
         drawing.src = imageUrl; // can also be a remote URL e.g. http://
         drawing.onload = function() {
-            context.drawImage(drawing,mindex*68-2,0, 64, 64);
+            context.drawImage(drawing,mindex*68+2,2, 64, 64);
         };
     }
 }
