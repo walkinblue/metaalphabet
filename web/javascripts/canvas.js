@@ -9,7 +9,7 @@ function ordering(parameters) {
         for (let j = i; j < parameters.length - 1; j++) {
             let p0 = parameters[j];
             let p1 = parameters[j + 1];
-            if (p0.order < p1.order) {
+            if (p0.order > p1.order) {
                 parameters[j] = p1;
                 parameters[j + 1] = p0;
             }
@@ -160,8 +160,8 @@ export function animating(canvas, parameters) {
     animateFunc = function () {
         context.globalCompositeOperation = 'destination-over';
         context.clearRect(0, 0, size.width, size.height);
-        for (let index in parameters) {
-            let parameter = parameters[index];
+        for (let i = parameters.length - 1 ; i >= 0 ; i-- ){
+            let parameter = parameters[i];
             draw(start, context, parameter);
         }
         if (request != null) {
