@@ -85,13 +85,34 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
+
+function logErrors(err, req, res, next) {
+    console.error(err.stack)
+    next(err)
+}
+function clientErrorHandler(err, req, res, next) {
+    if (req.xhr) {
+        res.status(500).send({ error: 'Something failed!' })
+    } else {
+        next(err)
+    }
+}
+function errorHandler(err, req, res, next) {
+    res.status(500)
+    res.render('error', { error: err })
+}
+
+
 init();
 const app = express()
 app.use(authentication);
 app.use(`/web`, express.static('web'));
 app.use(`/data`, express.static('data'));
 app.use(`/marks`, express.static('marks'));
-// app.use('/upload', express.static('upload'));
+
+app.use(logErrors)
+app.use(clientErrorHandler)
+app.use(errorHandler)
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true })
 // app.use(urlencodedParser)

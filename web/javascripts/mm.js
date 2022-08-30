@@ -1,6 +1,9 @@
 import linesJson from '/data/lines.json' assert {type: 'json'};
 import marksJson from '/data/marks.json' assert {type: 'json'};
 
+import {animating, stopping} from '/web/javascripts/canvas.js';
+
+
 function refreshData(){
 
 }
@@ -70,6 +73,41 @@ function init() {
         // document.getElementById(`mp_image_${index}_${mindex}`).src = document.getElementById(`mp_image`).src;
     });
 
+    document.getElementById(`mp_play`).addEventListener(`click`, function(e){
+        if(document.getElementById(`mp_play`).value != "停止"){
+            document.getElementById(`mp_play`).value = "播放";
+            stopping();
+            return;
+        }
+
+        document.getElementById(`mp_play`).value = "停止";
+        let index = document.getElementById(`mp_index`).value;
+        let mindex = document.getElementById(`mp_mindex`).value;
+        let metaphors = linesJson[index].metaphors;
+        let canvas = document.getElementById(`mp_canvas_${index}`);
+
+        let parameters = []
+        for(let index in metaphors){
+            let metaphor = metaphors[index];
+            let para = {};
+            if(metaphor.parameters)para = JSON.parse(metaphor.parameters);
+            para.pos = parseInt(index);
+            para.image = metaphor.mark.image;
+            parameters.push(para);
+        }
+
+        let changetring = document.getElementById(`mp_data_parameters`).value;
+        if(changetring){
+            let changeParam = JSON.parse(changetring);
+            changeParam.image = parameters[mindex].image;
+            changeParam.pos = parameters[mindex].pos;
+            parameters[mindex] = changeParam;
+        }
+        // console.log(metaphor.parameters);
+        animating(canvas, parameters);
+    
+    });
+
     document.getElementById(`mp_input_new`).addEventListener("click", function(e){
         addLine(linesJson.length, {time: "now", line:"", decode:"", image:"NONE.png"}, [], items);
     });
@@ -117,7 +155,7 @@ function addLine(index, line, metaphors, items){
 
     drawCanvas(index);
     document.getElementById(`mp_canvas_${index}`).addEventListener("click", function(e){
-        console.log(e.offsetX, e.offsetY);
+        // console.log(e.offsetX, e.offsetY);
         let mindex = parseInt(e.offsetX/68);
         showMetaphor(index, mindex)
     });
@@ -196,30 +234,29 @@ function showMetaphor(index, mindex) {
 
     if(vdiv.style.display == "flex" && mpindexes.index == indexes.index && mpindexes.mindex == indexes.mindex){
         vdiv.style.display = "none";
-        // idiv.style.border = "1px solid #eeeeee";
-        // if(lastidiv != null)lastidiv.style.border = "1px solid #eeeeee";
         return;
     }
-    // idiv.style.border = "1px solid #ff0000";
-    // if(lastidiv != idiv && lastidiv != null)lastidiv.style.border = "1px solid #eeeeee";
     lastidiv = idiv;
 
-    let value = linesJson[index].metaphors[mindex].mark.name;
+    let metaphor = linesJson[index].metaphors[mindex];
+
+    let value = metaphor.mark.name;
     document.getElementById("search_text").value = value;
     updateUrl(value);
 
     mpindexes = indexes;
 
-    document.getElementById(`mp_name`).innerHTML = linesJson[index].metaphors[mindex].mark.name;
-    document.getElementById(`mp_image`).src =  linesJson[index].metaphors[mindex].mark.image;
-    document.getElementById(`mp_data_name`).value = linesJson[index].metaphors[mindex].mark.name;
-    if(!linesJson[index].metaphors[mindex].parameters)linesJson[index].metaphors[mindex].parameters = "";
-    document.getElementById(`mp_data_parameters`).value = linesJson[index].metaphors[mindex].parameters;
+    document.getElementById(`mp_name`).innerHTML = metaphor.mark.name;
+    document.getElementById(`mp_image`).src =  metaphor.mark.image;
+    document.getElementById(`mp_data_name`).value = metaphor.mark.name;
+    if(!metaphor.parameters)metaphor.parameters = "";
+    document.getElementById(`mp_data_parameters`).value = metaphor.parameters;
     
     document.getElementById(`mp_index`).value = index;
     document.getElementById(`mp_mindex`).value = mindex;
+
     
-    console.log(index, mindex, mdiv.getBoundingClientRect().bottom);
+    // console.log(index, mindex, mdiv.getBoundingClientRect().bottom);
     vdiv.style.top = mdiv.getBoundingClientRect().bottom + 5;
     vdiv.style.display = "flex";
 
