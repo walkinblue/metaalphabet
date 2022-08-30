@@ -28,14 +28,9 @@ function prepare(parameters){
                 rotate: 0,
             }
         }
-        if(parameter.action == null){
-            parameter.action = {
-                move: [0,0],
-                zoom: 1.0,
-                afterduration: 0,
-                rotate: 0,
-                duration: 0,
-            }
+        if(parameter.actions == null){
+            parameter.actions = []
+            parameter._actionsduration = 0;
         }
     }
 
@@ -47,9 +42,20 @@ function prepare(parameters){
         if(parameter.start){
             if(parameter.start.beforeduration)starttime += parameter.start.beforeduration;
         }
-        if(parameter.action){
-            if(parameter.action.duration)starttime += parameter.action.duration;
-            if(parameter.action.afterduration)starttime += parameter.action.afterduration;
+        if(parameter.actions){
+            let actionsduration = 0;
+            for(let j in parameter.actions){
+                let action = parameter.actions[j];
+                if(action.duration){
+                    starttime += action.duration;
+                    actionsduration += action.duration;
+                }
+                if(action.afterduration){
+                    starttime += action.afterduration;    
+                    actionsduration += action.afterduration;
+                }
+            }
+            parameter._actionsduration = actionsduration;
         }
     }
 
@@ -83,13 +89,24 @@ let test =
         "move": [0, 0],
         "rotate": 0
     },
-    "action": {
-        "afterduration": 0,
-        "zoom": 1.0,
-        "move": [136, 0],
-        "rotate": 0,
-        "duration": 1000
-    }
+    "actions": [
+        {
+            "afterduration": 0,
+            "disappear": false,
+            "zoom": 1.0,
+            "move": [136, 0],
+            "rotate": 0,
+            "duration": 1000
+        },
+        {
+            "afterduration": 0,
+            "zoom": 1.0,
+            "move": [136, 0],
+            "rotate": 0,
+            "duration": 1000,
+            "effect": "disappear"
+        }   
+    ]
 };
 
 let test2 =
@@ -101,13 +118,13 @@ let test2 =
         "move": [32, 32],
         "rotate": 0
     },
-    "action": {
+    "actions": [{
         "afterduration": 0,
         "zoom": 1.0,
         "move": [204, 0],
         "rotate": 0,
         "duration": 1000
-    }
+    }]
 };
 
 function draw(startTime, context, parameter) {
@@ -116,21 +133,56 @@ function draw(startTime, context, parameter) {
 
 
     let start = parameter.start;
-    let action = parameter.action;
+    let actions = parameter.actions;
     let postionX = parameter._pos * 68;
 
     // console.log(time, start.beforeduration +parameter._starttime);
     if(time < start.beforeduration + parameter._starttime){
         context.drawImage(parameter._imageObject, postionX+2 + start.move[0], 2+ start.move[1], 64*start.zoom, 64*start.zoom);
-    }else if(time < (start.beforeduration + action.duration + parameter._starttime)){
-        let ratio = (time - parameter._starttime) / action.duration;
-        let zoomRatio = (action.zoom - start.zoom)*ratio + start.zoom;
-        let moveRatio = [(action.move[0] - start.move[0])*ratio + start.move[0], (action.move[1] - start.move[1])*ratio+start.move[1]];
-        context.drawImage(parameter._imageObject, postionX+2 + moveRatio[0], 2+ moveRatio[1], 64*action.zoom*zoomRatio, 64*action.zoom*zoomRatio);
-    }else{
-        let ratio = 1.0;
-        context.drawImage(parameter._imageObject, postionX+2 + action.move[0]*ratio, 2+ action.move[1]*ratio, 64*action.zoom*ratio, 64*action.zoom*ratio);
-    }    
+        return;
+    }
+    
+    let actionsduration = parameter._starttime + start.beforeduration;
+    let actionszoom = start.zoom;
+    let actionsmove = start.move;
+    let zooms = 1.0;
+    let moves = [0, 0];
+    for(let i in actions){
+        let action = actions[i];
+        zooms = action.zoom;
+        moves = action.move;
+        let previousduration = actionsduration;
+        let previouszoom = actionszoom;
+        let previousmove = actionsmove;
+        actionsduration += action.duration;
+        actionszoom = action.zoom;
+        actionsmove = action.move;
+        if(time < actionsduration){
+            let ratio = (time - previousduration) / action.duration;
+            let zoomRatio = (action.zoom - previouszoom)*ratio + start.zoom;
+            let moveRatio = [(action.move[0] - previousmove[0])*ratio + previousmove[0], (action.move[1] - previousmove[1])*ratio+previousmove[1]];
+            if(action.effect == "disappear"){
+                context.save();
+                context.globalAlpha = 1-ratio;
+                context.drawImage(parameter._imageObject, postionX+2 + moveRatio[0], 2+ moveRatio[1], 64*action.zoom*zoomRatio, 64*action.zoom*zoomRatio);    
+                context.restore();
+            }else{
+                context.globalAlpha = 1;
+                context.drawImage(parameter._imageObject, postionX+2 + moveRatio[0], 2+ moveRatio[1], 64*action.zoom*zoomRatio, 64*action.zoom*zoomRatio);    
+            }
+            return;
+        }
+        actionsduration += action.afterduration;
+        if(time < actionsduration){
+            let ratio = 1.0;
+            context.drawImage(parameter._imageObject, postionX+2 + action.move[0]*ratio, 2+ action.move[1]*ratio, 64*action.zoom*ratio, 64*action.zoom*ratio);
+            return;
+        }
+
+    }
+    context.drawImage(parameter._imageObject, postionX+2 + moves[0], 2+ moves[1], 64*zooms, 64*zooms);
+
+    return;
 }
 
 
